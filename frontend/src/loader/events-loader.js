@@ -6,3 +6,9 @@ export const eventListLoader = async () => {
   // loader는 fetch 결과를 바로 리턴하는 경우 알아서 json을 추출한다.
   return response;
 }
+
+export const eventDetailLoader = async ({params}) => {
+
+  return await fetch(`http://localhost:9000/api/events/${params.eventId}`);
+
+};
