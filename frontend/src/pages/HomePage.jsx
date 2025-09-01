@@ -1,5 +1,4 @@
 import React from 'react';
-import MainNavigation from "../components/MainNavigation.jsx";
 
 const HomePage = () => {
   return (
