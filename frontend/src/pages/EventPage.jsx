@@ -1,34 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Link} from 'react-router-dom';
+import React from 'react';
+import {useLoaderData} from 'react-router-dom';
+import EventList from '../components/EventList.jsx';
 
 const EventPage = () => {
 
-  const [eventList, setEventList] = useState([]);
-
-  // API CALL
-  const fetchEvents = async () => {
-    const response = await fetch('http://localhost:9000/api/events');
-    const data = await response.json();
-    console.log(data);
-
-    setEventList(data);
-  };
-
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  // loader가 리턴한 데이터 가져오기
+  const eventList = useLoaderData();
 
   return (
-    <>
-      <h1>Event Page</h1>
-      <ul>
-        {eventList.map(({eventId, title}) =>
-          <li key={eventId}>
-            <Link to={`/events/${eventId}`}>{title}</Link>
-          </li>)}
-      </ul>
-    </>
+    <EventList eventList={eventList} />
   );
 };
 
