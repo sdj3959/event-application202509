@@ -7,6 +7,7 @@ import EventDetailPage from "../pages/EventDetailPage.jsx";
 import EventLayout from "../layouts/EventLayout.jsx";
 import {eventListLoader, eventDetailLoader} from "../loader/events-loader.js";
 import NewEventPage from "../pages/NewEventPage.jsx";
+import {saveAction} from "../loader/events-actions.js";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,9 @@ const router = createBrowserRouter([
           },
           {
             path: "new",
-            element: <NewEventPage />
+            element: <NewEventPage />,
+            // action 함수는 CUD를 트리거
+            action: saveAction
           },
           {
             path: ":eventId",
