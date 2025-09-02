@@ -39,10 +39,10 @@ const EventForm = () => {
   };
 
   // route 설정에 있는 action 함수를 트리거 하려면 Form이라는 컴포넌트가 필요하다.
-    // 필수 속성으로 method 속성을 지정해야 함.
+  // 필수 속성으로 method 속성을 지정해야 함.
   return (
     <Form
-        method='POST'
+      method='POST'
       className={styles.form}
       noValidate
       // onSubmit={handleSubmit}
