@@ -2,7 +2,7 @@
 
 import {redirect} from 'react-router-dom';
 
-export const saveAction = async ({ request }) => {
+export const saveAction = async ({ request, params }) => {
   // console.log('save action!!');
 
   // form에 입력한 값 가져오기
@@ -16,7 +16,13 @@ export const saveAction = async ({ request }) => {
     imageUrl: formData.get('image')
   };
 
-  const response = await fetch('http://localhost:9000/api/events', {
+  let requestUrl = 'http://localhost:9000/api/events';
+
+  if (request.method === 'PUT') {
+    requestUrl += `/${params.eventId}`;
+  }
+
+  const response = await fetch(requestUrl, {
     method: request.method,
     headers: {
       'Content-Type': 'application/json'
