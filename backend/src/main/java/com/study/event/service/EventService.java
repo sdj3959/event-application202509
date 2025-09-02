@@ -7,10 +7,14 @@ import com.study.event.domain.entity.Event;
 import com.study.event.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -25,11 +29,19 @@ public class EventService {
 
     // 전체 조회
     @Transactional(readOnly = true)
-    public List<EventResponse> getEvents() {
-        return eventRepository.findAll()
-                .stream()
-                .map(EventResponse::from)
-                .collect(toList());
+    public Map<String, Object> getEvents(int pageNo) {
+
+        Slice<Event> eventSlice = eventRepository.findEvents(PageRequest.of(pageNo-1, 4));
+
+        List<EventResponse> events = eventSlice.getContent()
+                    .stream()
+                    .map(EventResponse::from)
+                    .collect(Collectors.toList());
+
+        return Map.of(
+                "hasNext", eventSlice.hasNext(),
+                "eventList", events
+        );
     }
 
     // 이벤트 생성
