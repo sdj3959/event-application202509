@@ -14,6 +14,8 @@ const EventItem = ({ event }) => {
   } = event;
 
   const deleteHandler = e => {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
     e.preventDefault();
 
     // 서버에 POST 요청
