@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import EventList from '../components/EventList.jsx';
+import EventSkeleton from "../components/EventSkeleton.jsx";
 
 const EventPage = () => {
 
@@ -13,9 +14,17 @@ const EventPage = () => {
   // 더 이상 가져올 데이터가 있는지 여부
   const [isFinish, setIsFinish] = useState(false);
 
+  // 로딩 상태 관리
+  const [loading, setLoading] = useState(false);
+
   const fetchEvents = async () => {
 
-    if (isFinish) return;
+    if (isFinish || loading) return;
+
+    setLoading(true);
+
+    // 강제로 1.5초의 로딩 부여
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
     const response = await fetch(`http://localhost:9000/api/events?page=${currentPage}`);
     const { hasNext, eventList: events } = await response.json();
@@ -23,6 +32,8 @@ const EventPage = () => {
     // 페이지번호 갱신
     setCurrentPage(prev => prev + 1);
     setIsFinish(!hasNext);
+
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -30,7 +41,7 @@ const EventPage = () => {
     // 무한스크롤을 위한 옵저버 생성
     const observer = new IntersectionObserver((entries) => {
 
-      if (isFinish) return;
+      if (isFinish || loading) return;
 
       if (entries[0].isIntersecting) {
         // console.log('감시대상 발견!');
@@ -56,8 +67,9 @@ const EventPage = () => {
     <>
       <EventList eventList={eventList} />
       {/* 무한스크롤 옵저버를 위한 감시대상 태그 */}
-      <div ref={observerRef} style={{height: 300, background:'yellow'}}>
+      <div ref={observerRef} style={{height: 100}}>
         {/* 로딩바, 스켈레톤 폴백 배치 */}
+        {loading && <EventSkeleton/>}
       </div>
     </>
   );
