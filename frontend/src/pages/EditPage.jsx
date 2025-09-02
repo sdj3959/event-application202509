@@ -1,10 +1,10 @@
 import React from 'react';
 import EventForm from "../components/EventForm.jsx";
 
-const NewEventPage = () => {
+const EditPage = () => {
   return (
-    <EventForm method='POST' />
+    <EventForm method='PUT' />
   );
 };
 
-export default NewEventPage;
+export default EditPage;
