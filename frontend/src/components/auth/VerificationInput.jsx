@@ -1,17 +1,22 @@
 import styles from './SignUpForm.module.scss';
 import {useEffect, useRef, useState} from 'react';
+import {AUTH_API_URL} from "../../config/host-config.js";
+import {debounce} from "lodash";
 
-const VerificationInput = () => {
+const VerificationInput = ({email}) => {
 
   // 완성된 인증코드를 상태관리
-  const [codes, setCodes] = useState([]);
+  const [codes, setCodes] = useState(['', '', '', '']);
+
+  // 에러 메시지 상태관리
+  const [error, setError] = useState('');
 
   // ref를 배열로 관리하는 법
   const inputRefs = useRef([]);
 
   // 수동으로 ref배열에 input태그들 저장하기
-  const bindRef = ($input) => {
-    inputRefs.current.push($input);
+  const bindRef = ($input, index) => {
+    inputRefs.current[index] = $input;
   };
 
   useEffect(() => {
@@ -30,18 +35,52 @@ const VerificationInput = () => {
     }
   };
 
+  // 서버에 인증코드 전송
+  const fetchVerifying = debounce(async (verifyCode) => {
+    const response = await fetch(`${AUTH_API_URL}/code?email=${email}&code=${verifyCode}`);
+    const {isMatch} = await response.json();
+
+    // 검증에 실패했을 경우
+    if (!isMatch) {
+      // 에러메시지를 세팅
+      setError('유효하지 않거나 만료된 인증코드입니다. 인증코드를 재발송합니다.');
+      // 인증코드를 모두 빈칸으로 되돌림
+      setCodes(Array(4).fill(''));
+      // 첫 번째 칸으로 재 포커싱
+      inputRefs.current[0].focus();
+      return;
+    }
+    // 검증 성공시 - 다음 스텝으로 이동하는 신호 올려보내기
+    setError('');
+
+  }, 1000);
+
   // 숫자 입력 이벤트
   const handleNumber = (index, e) => {
 
-    // 입력한 숫자를 하나로 연결하기
-    // console.log(e.target.value);
+    const inputValue = e.target.value;
+
+    if (inputValue !== '' && !/^\d$/.test(inputValue)) {
+      return;
+    }
+
 
     const copyCodes = [...codes];
-    copyCodes[index] = e.target.value;
+    copyCodes[index] = inputValue;
 
     setCodes(copyCodes);
 
     focusNextInput(index + 1);
+
+    // 모든 인증코드를 입력했을 때 서버에 인증코드를 전송
+    if (copyCodes.every(code => code !== '')) {
+      console.log('모든 칸이 입력됨! ', copyCodes);
+      const verifyCode = copyCodes.join('');
+      console.log('서버에 전송할 인증코드: ', verifyCode);
+
+      // 서버에 전송
+      fetchVerifying(verifyCode);
+    };
   };
 
   return (
@@ -51,16 +90,18 @@ const VerificationInput = () => {
         {
           Array.from(new Array(4)).map((_, index) => (
             <input
-              ref={bindRef}
+              ref={($input) => bindRef($input, index)}
               key={index}
               type='text'
               className={styles.codeInput}
               maxLength={1}
               onChange={(e) => handleNumber(index, e)}
+              value={codes[index]}
             />
           ))
         }
       </div>
+      {error && <p className={styles.errorMessage}>{error}</p>}
     </>
   );
 };
