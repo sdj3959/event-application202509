@@ -1,7 +1,10 @@
 import styles from './SignUpForm.module.scss';
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 const VerificationInput = () => {
+
+  // 완성된 인증코드를 상태관리
+  const [codes, setCodes] = useState([]);
 
   // ref를 배열로 관리하는 법
   const inputRefs = useRef([]);
@@ -16,9 +19,7 @@ const VerificationInput = () => {
     inputRefs.current[0].focus();
   }, []);
 
-  // 숫자 입력 이벤트
-  const handleNumber = (index) => {
-
+  const focusNextInput = index => {
     // 인덱스 검증 - 마지막 칸에서는 포커스 이동대신 블러처리
     if (index < inputRefs.current.length) {
       // 한글자가 입력되면 포커스를 다음 칸으로 이동
@@ -27,7 +28,20 @@ const VerificationInput = () => {
       // 포커스 아웃
       inputRefs.current[index - 1].blur();
     }
+  };
 
+  // 숫자 입력 이벤트
+  const handleNumber = (index, e) => {
+
+    // 입력한 숫자를 하나로 연결하기
+    // console.log(e.target.value);
+
+    const copyCodes = [...codes];
+    copyCodes[index] = e.target.value;
+
+    setCodes(copyCodes);
+
+    focusNextInput(index + 1);
   };
 
   return (
@@ -42,7 +56,7 @@ const VerificationInput = () => {
               type='text'
               className={styles.codeInput}
               maxLength={1}
-              onChange={() => handleNumber(index + 1)}
+              onChange={(e) => handleNumber(index, e)}
             />
           ))
         }
