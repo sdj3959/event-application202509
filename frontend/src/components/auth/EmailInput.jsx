@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import styles from './SignUpForm.module.scss';
+import {AUTH_API_URL} from "../../config/host-config.js";
 
 const EmailInput = () => {
 
@@ -23,6 +24,15 @@ const EmailInput = () => {
       setError('이메일 형식이 올바르지 않습니다.');
       return;
     }
+
+    // 이메일 중복확인 검증
+    (async () => {
+      const response = await fetch(`${AUTH_API_URL}/check-email?email=${encodeURIComponent(inputValue)}`);
+      const {isDuplicate, message} = await response.json();
+      if (isDuplicate) {
+        setError(message);
+      }
+    })();
 
     setError('');
   };
