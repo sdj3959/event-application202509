@@ -5,6 +5,7 @@ import {EVENT_API_URL} from "../config/host-config.js";
 
 const EventPage = () => {
 
+  // 감시대상 태그 연결
   const observerRef = useRef();
 
   const [eventList, setEventList] = useState([]);
