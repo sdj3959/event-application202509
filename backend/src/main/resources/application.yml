@@ -1,8 +1,22 @@
 server:
   port: 9000
 
-# database setting
 spring:
+  # mail send setting
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: dj9099@naver.com    # github 유출 금지
+    password: NY1UUYXTV15Y        # github 유출 금지
+    protocol: smtp
+    properties:
+        mail:
+            smtp:
+                auth: true
+                ssl.enable: true
+
+
+  # database setting
   datasource:
     url: jdbc:mariadb://localhost:3306/eventdb
     username: root
