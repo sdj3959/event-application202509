@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import styles from './SignUpForm.module.scss';
 import {AUTH_API_URL} from "../../config/host-config.js";
+import { debounce } from 'lodash'
 
 const EmailInput = () => {
 
@@ -45,7 +46,7 @@ const EmailInput = () => {
         className={error ? styles.invalidInput : ''}
         type='email'
         placeholder='Enter your email'
-        onChange={hanldeEmail}
+        onChange={debounce(hanldeEmail, 1000)}
       />
       {error && <p className={styles.errorMessage}>{error}</p>}
     </>
