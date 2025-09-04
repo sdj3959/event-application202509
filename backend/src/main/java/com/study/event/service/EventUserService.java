@@ -1,5 +1,6 @@
 package com.study.event.service;
 
+import com.study.event.domain.dto.request.SignupRequest;
 import com.study.event.domain.entity.EmailVerification;
 import com.study.event.domain.entity.EventUser;
 import com.study.event.repository.EmailVerificationRepository;
@@ -154,6 +155,17 @@ public class EventUserService {
         verification.updateNewCode(newCode);
         emailVerificationRepository.save(verification);
 
+    }
+
+    // 회원가입 마무리 처리
+    public void confirmSignup(SignupRequest dto) {
+
+        // 임시 회원가입된 회원정보를 조회
+        EventUser foundUser = eventUserRepository.findByEmail(dto.email()).orElseThrow();
+
+        // 데이터베이스에 임시회원가입된 회원정보의 패스워드와 생성시간을 채워넣기
+        foundUser.confirm(dto.password());
+        eventUserRepository.save(foundUser);
     }
 }
 
