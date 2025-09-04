@@ -1,4 +1,5 @@
 import {EVENT_API_URL} from '../config/host-config.js';
+import {redirect} from 'react-router-dom';
 
 export const eventListLoader = async () => {
   const response = await fetch(`${EVENT_API_URL}?page=1`);
@@ -14,5 +15,26 @@ export const eventDetailLoader = async ({ params }) => {
   return await fetch(`${EVENT_API_URL}/${params.eventId}`);
 }
 
+// 토큰데이터를 파싱하는 함수
+const parseUserData = () => JSON.parse(localStorage.getItem('userData'));
+
 // 로컬스토리지에 있는 토큰데이터를 불러오는 로더
-export const userDataLoader = () => JSON.parse(localStorage.getItem('userData'));
+export const userDataLoader = () => parseUserData();
+
+const isLoggedIn = () => parseUserData() !== null;
+
+// 로그인 여부를 검사하여 로그인하지 않았다면 로그인페이지로 돌려보내는 로더
+export const authCheckLoader = () => {
+  if (!isLoggedIn()) {
+    alert('로그인이 필요한 서비스입니다.');
+    return redirect('/');
+  }
+  return null; // 현재 페이지에 머물게 됨
+};
+
+
+
+
+
+
+

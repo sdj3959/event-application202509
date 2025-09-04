@@ -4,7 +4,7 @@ import EventPage from '../pages/EventPage.jsx';
 import RootLayout from '../layouts/RootLayout.jsx';
 import EventDetailPage from '../pages/EventDetailPage.jsx';
 import EventLayout from '../layouts/EventLayout.jsx';
-import {eventDetailLoader, userDataLoader} from '../loader/events-loader.js';
+import {authCheckLoader, eventDetailLoader, userDataLoader} from '../loader/events-loader.js';
 import {deleteAction, saveAction as manipulateAction, loginAction, logoutAction} from '../loader/events-actions.js';
 import NewEventPage from '../pages/NewEventPage.jsx';
 import EditPage from '../pages/EditPage.jsx';
@@ -44,6 +44,7 @@ const router = createBrowserRouter([
       {
         path: 'events',
         element: <EventLayout/>,
+        loader: authCheckLoader, // 라우트 가드
         children: [
           {
             index: true,
