@@ -42,6 +42,7 @@ public class Event {
     // 이벤트와 회원(작성자) N:1 단방향 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ev_user_id")
+    @Setter
     private EventUser eventUser;
 
     // 수정 편의 메서드
