@@ -7,7 +7,7 @@ import com.study.event.domain.entity.EventUser;
 import com.study.event.repository.EmailVerificationRepository;
 import com.study.event.repository.EventUserRepository;
 import jakarta.mail.internet.MimeMessage;
-import jwt.JwtTokenProvider;
+import com.study.event.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

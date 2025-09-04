@@ -1,5 +1,4 @@
-package jwt;
-
+package com.study.event.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

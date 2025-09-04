@@ -1,4 +1,4 @@
-package jwt;
+package com.study.event.jwt;
 
 import lombok.Getter;
 import lombok.Setter;
