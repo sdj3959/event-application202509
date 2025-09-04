@@ -228,7 +228,7 @@ public class EventUserService {
             throw new RuntimeException("이메일 인증 또는 회원가입이 완료되지 않은 회원입니다. 다시 가입해주세요.");
         }
         // 패스워드 일치 검사
-        if (!passwordEncoder.matches(foundUser.getPassword(), dto.password())) {
+        if (!passwordEncoder.matches(dto.password(), foundUser.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
