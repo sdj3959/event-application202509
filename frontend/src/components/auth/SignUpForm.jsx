@@ -4,8 +4,8 @@ import VerificationInput from './VerificationInput.jsx';
 import {useState} from 'react';
 import ProgressBar from '../common/ProgressBar.jsx';
 import PasswordInput from './PasswordInput.jsx';
-import {AUTH_API_URL} from "../../config/host-config.js";
-import {useNavigate} from "react-router-dom";
+import {AUTH_API_URL} from '../../config/host-config.js';
+import {useNavigate} from 'react-router-dom';
 
 const SignUpForm = () => {
 
@@ -46,10 +46,10 @@ const SignUpForm = () => {
   };
 
   // 회원가입 완료 이벤트
-  const handleSubmit = e=> {
+  const handleSubmit = e => {
     e.preventDefault();
 
-    (async ()=> {
+    (async () => {
       const response = await fetch(`${AUTH_API_URL}/join`, {
         method: 'POST',
         headers: {
@@ -68,7 +68,7 @@ const SignUpForm = () => {
       navigate('/');
 
     })();
-  }
+  };
 
   return (
     <div className={styles.signupForm}>
@@ -77,8 +77,7 @@ const SignUpForm = () => {
         {step === 2 && <VerificationInput email={enteredEmail} onSuccess={nextStep} />}
         {step === 3 && <PasswordInput onSuccess={passwordSuccessHandler} />}
 
-        {
-          isActiveButton &&
+        {isActiveButton &&
           <div>
             <button onClick={handleSubmit}>회원가입 완료</button>
           </div>
