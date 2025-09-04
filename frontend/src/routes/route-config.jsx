@@ -25,7 +25,11 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <WelcomePage />,
-            action: loginAction
+            action: loginAction,
+            loader: () => {
+              const userData = JSON.parse(localStorage.getItem('userData'));
+              console.log(userData);
+            }
           },
           {
             path: '/sign-up',

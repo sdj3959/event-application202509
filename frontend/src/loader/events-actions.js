@@ -76,4 +76,9 @@ export const loginAction = async ({ request }) => {
     return data.message;
   }
 
+  // 로그인에 성공했을 때 - 토큰을 저장
+  localStorage.setItem('userData', JSON.stringify(data));
+
+  return redirect('/');
+
 };
