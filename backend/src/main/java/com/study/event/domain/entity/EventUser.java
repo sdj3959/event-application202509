@@ -5,9 +5,11 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-@ToString
+@ToString(exclude = "eventList")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +41,11 @@ public class EventUser {
     // 이메일 인증을 완료했는지 여부
     @Column(nullable = false)
     private boolean emailVerified;
+
+    // 이벤트와 양방향 연결
+    @OneToMany(mappedBy = "eventUser", cascade =  CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Event> eventList = new ArrayList<>();
 
     // 이메일 인증을 완료하는 헬퍼함수
     public void completeVerifying() {

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
+@ToString(exclude = "eventUser")
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,10 +39,17 @@ public class Event {
     @CreationTimestamp
     private LocalDateTime createdAt; // 이벤트 등록 날짜
 
+    // 이벤트와 회원(작성자) N:1 단방향 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ev_user_id")
+    private EventUser eventUser;
+
+    // 수정 편의 메서드
     public void changeEvent(EventCreate dto) {
         this.title = dto.title();
         this.description = dto.desc();
         this.image = dto.imageUrl();
         this.date = dto.beginDate();
     }
+
 }
