@@ -6,7 +6,7 @@ spring:
   mail:
     host: smtp.naver.com
     port: 465
-    username: dj9099    # github 유출 금지
+    username: dj9099@naver.com    # github 유출 금지
     password:         # github 유출 금지
     protocol: smtp
     properties:
@@ -39,7 +39,6 @@ logging:
     root: info
     com.study.event: debug
     org.hibernate.SQL: debug
-
 
 
 jwt:
