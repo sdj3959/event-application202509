@@ -13,7 +13,7 @@ const SignUpForm = () => {
   const [isActiveButton, setIsActiveButton] = useState(false);
 
   // 현재 어떤 스텝인지 확인
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
   // 프로그레스바 노출 여부
   const [isNext, setIsNext] = useState(false);
 
