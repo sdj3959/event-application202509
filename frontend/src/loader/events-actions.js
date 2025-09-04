@@ -1,7 +1,7 @@
 // 이벤트를 등록하는 함수
 
 import {redirect} from 'react-router-dom';
-import {EVENT_API_URL} from "../config/host-config.js";
+import {AUTH_API_URL, EVENT_API_URL} from '../config/host-config.js';
 
 export const saveAction = async ({ request, params }) => {
   // console.log('save action!!');
@@ -18,7 +18,6 @@ export const saveAction = async ({ request, params }) => {
   };
 
   let requestUrl = EVENT_API_URL;
-
   if (request.method === 'PUT') {
     requestUrl += `/${params.eventId}`;
   }
@@ -46,8 +45,35 @@ export const deleteAction = async ({params}) => {
   console.log('삭제 액션 함수 호출!');
 
   const res = await fetch(`${EVENT_API_URL}/${params.eventId}`, {
-    method: 'DELETE',
+    method: 'DELETE'
   });
 
   return redirect('/events');
+};
+
+// 로그인 처리 액션함수
+export const loginAction = async ({ request }) => {
+
+  // 입력데이터 읽기
+  const formData = await request.formData();
+
+  const payload = {
+    email: formData.get('email'),
+    password: formData.get('password'),
+  };
+
+  const response = await fetch(`${AUTH_API_URL}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await response.json();
+
+  if (response.status === 422) {
+    // 서버에서 응답한 데이터를 컴포넌트에서 가져다 사용할 수 있게 데이터를 리턴.
+    // 그럼 action함수를 처리하는 컴포넌트는 useActionData라는 훅으로 사용가능
+    return data.message;
+  }
+
 };
