@@ -2,6 +2,7 @@
 
 import {redirect} from 'react-router-dom';
 import {AUTH_API_URL, EVENT_API_URL} from '../config/host-config.js';
+import { getUserToken } from "./events-loader.js";
 
 export const saveAction = async ({ request, params }) => {
   // console.log('save action!!');
@@ -64,7 +65,10 @@ export const loginAction = async ({ request }) => {
 
   const response = await fetch(`${AUTH_API_URL}/login`, {
     method: 'POST',
-    headers: { 'Content-Type':'application/json' },
+    headers: {
+      'Content-Type':'application/json',
+      'Authorization': 'Bearer ' + getUserToken()
+    },
     body: JSON.stringify(payload)
   });
 
