@@ -4,10 +4,15 @@ import VerificationInput from './VerificationInput.jsx';
 import {useState} from 'react';
 import ProgressBar from '../common/ProgressBar.jsx';
 import PasswordInput from './PasswordInput.jsx';
+import {AUTH_API_URL} from "../../config/host-config.js";
+import {useNavigate} from "react-router-dom";
 
 const SignUpForm = () => {
 
+  const navigate = useNavigate();
+
   const [enteredEmail, setEnteredEmail] = useState('');
+  const [enteredPassword, setEnteredPassword] = useState('');
 
   // 회원가입 버튼 활성화 여부
   const [isActiveButton, setIsActiveButton] = useState(false);
@@ -34,11 +39,36 @@ const SignUpForm = () => {
   };
 
   // 패스워드 입력이 끝날 때 호출될 함수
-  const passwordSuccessHandler = (isValid) => {
-
+  const passwordSuccessHandler = (isValid, password) => {
+    setEnteredPassword(password);
     // 회원가입버튼을 열어줄지 여부
     setIsActiveButton(isValid);
   };
+
+  // 회원가입 완료 이벤트
+  const handleSubmit = e=> {
+    e.preventDefault();
+
+    (async ()=> {
+      const response = await fetch(`${AUTH_API_URL}/join`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword
+        })
+      });
+
+      if (!response.ok) throw new Error('회원가입에 실패했습니다.');
+
+      const data = await response.json();
+      alert(data.message);
+      navigate('/');
+
+    })();
+  }
 
   return (
     <div className={styles.signupForm}>
@@ -47,7 +77,12 @@ const SignUpForm = () => {
         {step === 2 && <VerificationInput email={enteredEmail} onSuccess={nextStep} />}
         {step === 3 && <PasswordInput onSuccess={passwordSuccessHandler} />}
 
-        {isActiveButton && <div><button>회원가입 완료</button></div>}
+        {
+          isActiveButton &&
+          <div>
+            <button onClick={handleSubmit}>회원가입 완료</button>
+          </div>
+        }
 
         {isNext && <ProgressBar/>}
 
