@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class EventUserService {
 
     // 이메일 발송을 위한 의존객체
     private final JavaMailSender mailSender;
+    private final PasswordEncoder passwordEncoder;
 
     private final EventUserRepository eventUserRepository;
     private final EmailVerificationRepository emailVerificationRepository;
@@ -161,10 +163,16 @@ public class EventUserService {
     public void confirmSignup(SignupRequest dto) {
 
         // 임시 회원가입된 회원정보를 조회
-        EventUser foundUser = eventUserRepository.findByEmail(dto.email()).orElseThrow();
+        EventUser foundUser = eventUserRepository.findByEmail(dto.email()).orElseThrow(
+                () -> new RuntimeException("임시 회원가입된 정보가 없습니다.")
+        );
+        // 이메일 인증을 받았는지 확인
+        if (!foundUser.isEmailVerified()) {
+            throw new RuntimeException("이메일 인증이 완료되지 않은 회원입니다.");
+        }
 
         // 데이터베이스에 임시회원가입된 회원정보의 패스워드와 생성시간을 채워넣기
-        foundUser.confirm(dto.password());
+        foundUser.confirm(passwordEncoder.encode(dto.password()));
         eventUserRepository.save(foundUser);
     }
 }
