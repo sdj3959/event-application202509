@@ -82,3 +82,13 @@ export const loginAction = async ({ request }) => {
   return redirect('/');
 
 };
+
+// 로그아웃 처리 액션
+export const logoutAction = () => {
+  console.log('logout action');
+
+  localStorage.removeItem('userData');
+
+  // element가 없는 route path의 액션이나 로더함수는 반드시 redirect를 필수로 사용
+  return redirect('/');
+};
