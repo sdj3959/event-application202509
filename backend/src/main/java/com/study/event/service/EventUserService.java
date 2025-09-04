@@ -7,6 +7,7 @@ import com.study.event.domain.entity.EventUser;
 import com.study.event.repository.EmailVerificationRepository;
 import com.study.event.repository.EventUserRepository;
 import jakarta.mail.internet.MimeMessage;
+import jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,6 +35,7 @@ public class EventUserService {
     // 이메일 발송을 위한 의존객체
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
 
     private final EventUserRepository eventUserRepository;
     private final EmailVerificationRepository emailVerificationRepository;
@@ -212,7 +216,7 @@ public class EventUserService {
     }
 
     // 로그인 검증하기
-    public void authenticate(LoginRequest dto) {
+    public Map<String, Object> authenticate(LoginRequest dto) {
 
         // 이메일을 통해 회원가입 여부 확인
         EventUser foundUser
@@ -230,6 +234,14 @@ public class EventUserService {
         }
 
         // 로그인 성공 - 토큰 발급
+        String accessToken = tokenProvider.createAccessToken(dto.email());
+
+        return Map.of(
+                "token", accessToken,
+                "message", "로그인에 성공했습니다.",
+                "email", dto.email(),
+                "role", foundUser.getRole().toString()
+        );
     }
 }
 
