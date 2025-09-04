@@ -92,3 +92,6 @@ export const logoutAction = () => {
   // element가 없는 route path의 액션이나 로더함수는 반드시 redirect를 필수로 사용
   return redirect('/');
 };
+
+// 로컬스토리지에 있는 토큰데이터를 불러오는 로더
+export const userDataLoader = () => JSON.parse(localStorage.getItem('userData'));

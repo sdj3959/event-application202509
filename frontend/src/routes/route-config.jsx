@@ -4,7 +4,7 @@ import EventPage from '../pages/EventPage.jsx';
 import RootLayout from '../layouts/RootLayout.jsx';
 import EventDetailPage from '../pages/EventDetailPage.jsx';
 import EventLayout from '../layouts/EventLayout.jsx';
-import {eventDetailLoader} from '../loader/events-loader.js';
+import {eventDetailLoader, userDataLoader} from '../loader/events-loader.js';
 import {deleteAction, saveAction as manipulateAction, loginAction, logoutAction} from '../loader/events-actions.js';
 import NewEventPage from '../pages/NewEventPage.jsx';
 import EditPage from '../pages/EditPage.jsx';
@@ -17,6 +17,10 @@ const router = createBrowserRouter([
     path: '/',
     element: <RootLayout/>,
     errorElement: <ErrorPage/>,
+    loader: userDataLoader,
+    // loader의 리턴데이터는 children(Outlet)들에게는 전달되지 않는게 기본
+    // 그런데 id를 주면 Children들이 id로 가져갈 수 있음
+    id: 'user-token-data',
     children: [
       {
         path: '',
@@ -26,11 +30,6 @@ const router = createBrowserRouter([
             index: true,
             element: <WelcomePage />,
             action: loginAction,
-            loader: () => {
-              const userData = JSON.parse(localStorage.getItem('userData'));
-              console.log(userData);
-              return userData;
-            }
           },
           {
             path: '/sign-up',
@@ -39,7 +38,7 @@ const router = createBrowserRouter([
           {
             path: '/logout',
             action: logoutAction
-          },
+          }
         ]
       },
       {
