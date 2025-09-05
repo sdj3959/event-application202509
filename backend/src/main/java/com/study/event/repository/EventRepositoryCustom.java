@@ -7,5 +7,5 @@ import org.springframework.data.domain.Slice;
 public interface EventRepositoryCustom {
 
     // 이벤트 목록 조회 페이징 처리 (무한스크롤 전용)
-    Slice<Event> findEvents(Pageable pageable);
+    Slice<Event> findEvents(Long userId, Pageable pageable);
 }
