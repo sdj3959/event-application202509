@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import EventList from '../components/EventList.jsx';
 import EventSkeleton from "../components/EventSkeleton.jsx";
 import {EVENT_API_URL} from "../config/host-config.js";
+import {getUserToken} from "../loader/events-loader.js";
 
 const EventPage = () => {
 
@@ -28,7 +29,12 @@ const EventPage = () => {
     // 강제로 1.5초의 로딩 부여
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    const response = await fetch(`${EVENT_API_URL}?page=${currentPage}`);
+    const response = await fetch(`${EVENT_API_URL}?page=${currentPage}`,{
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer '+ getUserToken()
+      }
+    });
     const { hasNext, eventList: events } = await response.json();
     setEventList(prev => [...prev, ...events]);
     // 페이지번호 갱신
