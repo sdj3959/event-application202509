@@ -2,7 +2,8 @@
 
 import {redirect} from 'react-router-dom';
 import {AUTH_API_URL, EVENT_API_URL} from '../config/host-config.js';
-import { getUserToken } from "./events-loader.js";
+import { getUserToken } from './events-loader.js';
+import {fetchWithAuth} from '../config/api.js';
 
 export const saveAction = async ({ request, params }) => {
   // console.log('save action!!');
@@ -23,13 +24,7 @@ export const saveAction = async ({ request, params }) => {
     requestUrl += `/${params.eventId}`;
   }
 
-  const response = await fetch(requestUrl, {
-    method: request.method,
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
-  });
+  const response = await fetchWithAuth(requestUrl, request.method, payload);
 
   if (!response.ok) {
     throw new Error('이벤트 생성에 실패했습니다.');
@@ -45,9 +40,7 @@ export const deleteAction = async ({params}) => {
 
   console.log('삭제 액션 함수 호출!');
 
-  const res = await fetch(`${EVENT_API_URL}/${params.eventId}`, {
-    method: 'DELETE'
-  });
+  const res = await fetchWithAuth(`${EVENT_API_URL}/${params.eventId}`, 'DELETE');
 
   return redirect('/events');
 };
@@ -65,10 +58,7 @@ export const loginAction = async ({ request }) => {
 
   const response = await fetch(`${AUTH_API_URL}/login`, {
     method: 'POST',
-    headers: {
-      'Content-Type':'application/json',
-      'Authorization': 'Bearer ' + getUserToken()
-    },
+    headers: { 'Content-Type':'application/json' },
     body: JSON.stringify(payload)
   });
 
@@ -89,13 +79,10 @@ export const loginAction = async ({ request }) => {
 
 // 로그아웃 처리 액션
 export const logoutAction = () => {
-  console.log('logout action');
+  console.log('logout action!!');
 
   localStorage.removeItem('userData');
 
   // element가 없는 route path의 액션이나 로더함수는 반드시 redirect를 필수로 사용
   return redirect('/');
 };
-
-// 로컬스토리지에 있는 토큰데이터를 불러오는 로더
-export const userDataLoader = () => JSON.parse(localStorage.getItem('userData'));

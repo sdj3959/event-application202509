@@ -1,8 +1,9 @@
 import {EVENT_API_URL} from '../config/host-config.js';
 import {redirect} from 'react-router-dom';
+import {fetchWithAuth} from '../config/api.js';
 
 export const eventListLoader = async () => {
-  const response = await fetch(`${EVENT_API_URL}?page=1`);
+  const response = await fetchWithAuth(`${EVENT_API_URL}?page=1`);
 
   // loader가 리턴한 데이터는 라우팅된 페이지와 그 하위 컴포넌트에서 언제든 사용가능
   // loader는 fetch결과를 바로 리턴하는 경우 알아서 json을 추출한다.
@@ -12,7 +13,7 @@ export const eventListLoader = async () => {
 
 export const eventDetailLoader = async ({ params }) => {
 
-  return await fetch(`${EVENT_API_URL}/${params.eventId}`);
+  return await fetchWithAuth(`${EVENT_API_URL}/${params.eventId}`);
 }
 
 // 토큰데이터를 파싱하는 함수
@@ -32,12 +33,6 @@ export const authCheckLoader = () => {
   return null; // 현재 페이지에 머물게 됨
 };
 
+
 // 로컬스토리지에서 토큰값을 뽑아주는 함수
 export const getUserToken = () => parseUserData()?.token;
-
-
-
-
-
-
-
